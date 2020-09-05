@@ -1,0 +1,14 @@
+node_modules
+build
+npm-debug.log
+.env
+.DS_Store
+*.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Key
+src/key.ts
