@@ -4,14 +4,17 @@ let indexNumber: number = 0;
 let finish: number = 0;
 let ArrayResults: string[] = [];
 
+
 //Hace la petición
 
 export async function init(ctx: any, msj: string, initial: number) {
 
+    const URI = `https://listado.mercadolibre.com.ve/${msj}#D[A:${msj}]`
+
 	ArrayResults = []; //Por cada nueva búsqueda reinicia el array
 
 	const $ = await request({
-		uri: `https://listado.mercadolibre.com.ve/${msj}#D[A:${msj}]`,
+		uri: URI,
 		transform: (body) => cheerio.load(body, { decodeEntities: false }),
 	}).catch((err) => {
 		ctx.reply("Ah ocurrido un error,sorry :c");
@@ -22,14 +25,17 @@ export async function init(ctx: any, msj: string, initial: number) {
 	indexNumber = initial;
 
 	$("ol li.ui-search-layout__item").each((i: number, el: string) => {
+
 		const Products_Name: string = $(el)
 			.find("div.ui-search-result__wrapper div a h2")
 			.html();
+
 		const Price_Product: number = $(el)
-			.find(
-				"div.ui-search-result__wrapper div div div div span span.price-tag-fraction"
-			)
+			.find("div.ui-search-result__wrapper div div div div span span.price-tag-fraction")
 			.html();
+
+		const Link_Product:string = $(el)
+		.find("div div a").attr('href')
 		finish = i + indexNumber + 1;
 		ArrayResults.push(
 			    (i + 1) +
@@ -38,7 +44,8 @@ export async function init(ctx: any, msj: string, initial: number) {
 				"\n" +
 				"💰" +
 				Price_Product +
-				" Bs.S" +
+				" Bs.S " +
+				"[Visitar Pagina]("+Link_Product+")" +
 				"\n\n"
 		);
 	});
@@ -67,6 +74,7 @@ export function more(ctx: any, number: number) {
 		ctx.reply("No hay mas resultados que mostrar");
 	} else {
 		ctx.reply("Resultado de búsqueda:" + "\n\n" + messageOut, {
+			parse_mode : "Markdown",
 			reply_markup: {
 				inline_keyboard: [
 					[{ text: "Ver mas resultados", callback_data: "more" }],

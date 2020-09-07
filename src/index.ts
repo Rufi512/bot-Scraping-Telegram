@@ -1,4 +1,4 @@
-const Telegraf = require('telegraf')
+import Telegraf from 'Telegraf'
 import {Bot_token} from './key'
 import {StartPetitions} from './petitions'
 
