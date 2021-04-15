@@ -1,15 +1,21 @@
-import Telegraf from 'Telegraf'
-import {Bot_token} from './key'
-import {StartPetitions} from './petitions'
+import telegraf from 'telegraf'
+import dotenv from "dotenv"
+dotenv.config();
+import {start,search,help} from './commands'
+import {showResult} from './controllers'
 
-const bot = new Telegraf(Bot_token)
+const token:string = process.env.TOKEN || 'YOU_TOKEN'
 
-bot.start(StartPetitions.start) //Bienvenida
+const bot = new telegraf(token)
 
-bot.help(StartPetitions.help) //Ayuda
+bot.start(start) //Bienvenida
 
-bot.on('text', StartPetitions.search) //Recibe texto y luego busca
+bot.help(help) //Ayuda
 
-bot.action('more',StartPetitions.more) //Muestra mas resultado de la misma busqueda
+bot.on('text', search) //Recibe texto y luego realiza la búsqueda
+
+bot.action('showResult',showResult) //Muestra mas resultado de la misma búsqueda
 
 bot.launch()
+
+console.log('Bot iniciado!')
